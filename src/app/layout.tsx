@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body className={`${intertSans.variable} antialiased`}>
+      <body className={`${intertSans.variable} antialiased bg-stone-50`}>
         <main>{children}</main>
         <Toaster richColors position="top-right" closeButton />
       </body>
