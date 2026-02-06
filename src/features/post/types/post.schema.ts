@@ -8,7 +8,7 @@ export const postFormSchema = z.object({
   content: z
     .string()
     .min(1, "Content is required.")
-    .max(2000, "Content must be at most 2000 characters."),
+    .max(1000, "Content must be at most 1000 characters."),
 });
 export type PostFormData = z.infer<typeof postFormSchema>;
 

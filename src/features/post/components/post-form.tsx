@@ -18,9 +18,22 @@ import { Textarea } from "@/src/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { Controller } from "react-hook-form";
 import { usePostForm } from "../hooks/use-post-form";
+import { useImproveText } from "../hooks/use-improve-text";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { StarsIcon } from "@hugeicons/core-free-icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/src/components/ui/tooltip";
 
 export default function PostForm() {
   const { form, onSubmit, isSubmitDisabled, isPending } = usePostForm();
+
+  const { loading, improveText } = useImproveText({
+    watch: form.watch,
+    setValue: form.setValue,
+  });
 
   return (
     <Card className="w-full h-fit">
@@ -56,12 +69,44 @@ export default function PostForm() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="content">Content</FieldLabel>
-                  <Textarea
-                    {...field}
-                    id="content"
-                    placeholder="Content here"
-                    disabled={isPending}
-                  />
+                  <div className="relative">
+                    <Textarea
+                      {...field}
+                      id="content"
+                      placeholder="Content here"
+                      disabled={isPending}
+                      rows={10}
+                      maxLength={1000}
+                      className="resize-none"
+                    />
+                    <div className="absolute bottom-2 right-2 flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">
+                        {loading && "improving..."}
+                      </span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={improveText}
+                            disabled={loading || isSubmitDisabled}
+                            className="cursor-pointer"
+                          >
+                            <HugeiconsIcon
+                              icon={StarsIcon}
+                              size={24}
+                              color="currentColor"
+                              strokeWidth={1.5}
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Improve text with AI</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </div>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}

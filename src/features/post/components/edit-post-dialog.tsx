@@ -18,7 +18,15 @@ import { Textarea } from "@/src/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { Controller } from "react-hook-form";
 import { useEditPostForm } from "../hooks/use-edit-post-form";
+import { useImproveText } from "../hooks/use-improve-text";
 import type { getPostFormData } from "../types/post.schema";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { StarsIcon } from "@hugeicons/core-free-icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/src/components/ui/tooltip";
 
 interface EditPostDialogProps {
   post: getPostFormData | null;
@@ -39,6 +47,11 @@ export function EditPostDialog({
     onSuccess: () => {
       onOpenChange(false);
     },
+  });
+
+  const { loading, improveText } = useImproveText({
+    watch: form.watch,
+    setValue: form.setValue,
   });
 
   return (
@@ -76,12 +89,44 @@ export function EditPostDialog({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="edit-content">Content</FieldLabel>
-                  <Textarea
-                    {...field}
-                    id="edit-content"
-                    placeholder="Content here"
-                    disabled={isPending}
-                  />
+                  <div className="relative">
+                    <Textarea
+                      {...field}
+                      id="edit-content"
+                      placeholder="Content here"
+                      disabled={isPending}
+                      rows={10}
+                      maxLength={1000}
+                      className="resize-none"
+                    />
+                    <div className="absolute bottom-2 right-2 flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">
+                        {loading && "improving..."}
+                      </span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={improveText}
+                            disabled={loading || isSubmitDisabled}
+                            className="cursor-pointer"
+                          >
+                            <HugeiconsIcon
+                              icon={StarsIcon}
+                              size={24}
+                              color="currentColor"
+                              strokeWidth={1.5}
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Improve text with AI</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </div>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}

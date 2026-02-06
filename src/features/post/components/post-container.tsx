@@ -1,4 +1,7 @@
 "use client";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -117,7 +120,11 @@ export function PostsContainer() {
             </PostCardSubContentItem>
           </PostCardSubContent>
 
-          <PostCardContent>{post.content}</PostCardContent>
+          <PostCardContent>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {post.content}
+            </ReactMarkdown>
+          </PostCardContent>
         </PostCard>
       ))}
 
