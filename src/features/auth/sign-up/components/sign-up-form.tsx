@@ -16,11 +16,13 @@ import {
   FieldLabel,
 } from "@/src/components/ui/field";
 import { Input } from "@/src/components/ui/input";
+import { Separator } from "@/src/components/ui/separator";
 import { Controller } from "react-hook-form";
 import { useSignUp } from "../hooks/use-sign-up";
+import { GoogleIcon } from "./google-icon";
 
 export default function SignUpForm() {
-  const { form, onSubmit } = useSignUp();
+  const { form, onSubmit, onGoogleSignIn, isGoogleLoading } = useSignUp();
 
   return (
     <motion.div
@@ -48,7 +50,7 @@ export default function SignUpForm() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          <CardContent>
+          <CardContent className="space-y-4">
             <form id="form-sign-up" onSubmit={form.handleSubmit(onSubmit)}>
               <FieldGroup>
                 <Controller
@@ -73,6 +75,23 @@ export default function SignUpForm() {
                 />
               </FieldGroup>
             </form>
+
+            <div className="flex items-center gap-3">
+              <Separator className="flex-1" />
+              <span className="text-xs text-muted-foreground">or</span>
+              <Separator className="flex-1" />
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={onGoogleSignIn}
+              disabled={isGoogleLoading}
+            >
+              <GoogleIcon />
+              {isGoogleLoading ? "Signing in..." : "Continue with Google"}
+            </Button>
           </CardContent>
         </motion.div>
 
