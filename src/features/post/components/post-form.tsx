@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -20,19 +21,26 @@ import { motion } from "motion/react";
 import { Controller } from "react-hook-form";
 import { usePostForm } from "../hooks/use-post-form";
 import { useImproveText } from "../hooks/use-improve-text";
+import { useCreateWithAI } from "../hooks/use-create-with-ai";
+import { CreateWithAIDialog } from "./create-with-ai-dialog";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { StarsIcon } from "@hugeicons/core-free-icons";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/src/components/ui/tooltip";
+import { StarsIcon } from "@hugeicons/core-free-icons";
 
 export default function PostForm() {
+  const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
   const { form, onSubmit, isSubmitDisabled, isPending } = usePostForm();
 
   const { loading, improveText } = useImproveText({
     watch: form.watch,
+    setValue: form.setValue,
+  });
+
+  const { loading: aiLoading, generatePost } = useCreateWithAI({
     setValue: form.setValue,
   });
 
@@ -103,7 +111,7 @@ export default function PostForm() {
                           placeholder="Content here"
                           disabled={isPending}
                           rows={10}
-                          maxLength={1000}
+                          maxLength={2000}
                           className="resize-none"
                         />
                         <div className="absolute bottom-2 right-2 flex items-center gap-2">
@@ -154,13 +162,27 @@ export default function PostForm() {
             ease: [0.25, 0.46, 0.45, 0.94],
           }}
         >
-          <CardFooter className="flex justify-end">
+          <CardFooter className="flex justify-end gap-3">
+            <Button
+              type="button"
+              onClick={() => setIsAIDialogOpen(true)}
+              disabled={aiLoading}
+            >
+              <HugeiconsIcon icon={StarsIcon} strokeWidth={2} />
+              {aiLoading ? "Generating..." : "Create With AI"}
+            </Button>
             <Button type="submit" form="form-post" disabled={isSubmitDisabled}>
               {isPending && <Loader2 className="animate-spin" />}
               {isPending ? "Creating..." : "Create"}
             </Button>
           </CardFooter>
         </motion.div>
+        <CreateWithAIDialog
+          open={isAIDialogOpen}
+          onOpenChange={setIsAIDialogOpen}
+          onGenerate={generatePost}
+          loading={aiLoading}
+        />
       </Card>
     </motion.div>
   );
