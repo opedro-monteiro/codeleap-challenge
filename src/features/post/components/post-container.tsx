@@ -18,6 +18,7 @@ import { EmptyError } from "@/src/components/empty-error";
 import {
   PostCard,
   PostCardContent,
+  PostCardFooter,
   PostCardHeader,
   PostCardHeaderActionButton,
   PostCardHeaderActions,
@@ -25,12 +26,18 @@ import {
   PostCardSubContentItem,
   PostCardTitle,
 } from "@/src/features/post/components/post-card";
-import { EditIcon, Trash } from "@hugeicons/core-free-icons";
+import { EditIcon, Share, Trash } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { usePostContainer } from "../hooks/use-post-container";
 import { getRelativeTime } from "../utils/get-relative-time";
 import { EditPostDialog } from "./edit-post-dialog";
+import { LikeButton } from "./like-button";
 import { PostCardSkeleton } from "./post-card-skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/src/components/ui/tooltip";
 
 export function PostsContainer() {
   const {
@@ -125,6 +132,32 @@ export function PostsContainer() {
               {post.content}
             </ReactMarkdown>
           </PostCardContent>
+
+          <PostCardFooter className="flex justify-end">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <LikeButton />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Like</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant={"ghost"}>
+                  <HugeiconsIcon
+                    icon={Share}
+                    color="currentColor"
+                    strokeWidth={2}
+                  />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Share</p>
+              </TooltipContent>
+            </Tooltip>
+          </PostCardFooter>
         </PostCard>
       ))}
 
